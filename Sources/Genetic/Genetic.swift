@@ -1,15 +1,15 @@
 import Foundation
 
-public typealias Genome = Collection & Equatable
+public typealias Genome = Equatable
 
-private struct Chromosome<T: Genome>: Equatable where T.Element: Equatable, T.Index == Int {
-  var genome: T
+private struct Chromosome<T: Genome>: Equatable {
+  var genome: [T]
   var rank: Double
 }
 
-public class Genetic<T: Genome> where T.Element: Equatable, T.Index == Int {
-  public typealias FitnessFunction = (_ inValue: T) -> Double
-  public typealias MutationFunction = () -> T.Element
+public class Genetic<T: Genome> {
+  public typealias FitnessFunction = (_ inValue: [T]) -> Double
+  public typealias MutationFunction = () -> T
 
   private var n = 10
   private var mutationFactor: Int = 100
@@ -28,7 +28,7 @@ public class Genetic<T: Genome> where T.Element: Equatable, T.Index == Int {
     self.mutationFactor = mutationFactor
   }
   
-  public func apply(population: [T]) -> [[T.Element]] {
+  public func apply(population: [[T]]) -> [[T]] {
     //get ranks for each member of the population
     self.rankingPool = population.map({ Chromosome(genome: $0,
                                                  rank: self.getRank(value: $0)) })
@@ -44,7 +44,7 @@ public class Genetic<T: Genome> where T.Element: Equatable, T.Index == Int {
     self.rankingPool.removeAll()
   }
   
-  private func crossover() -> [[T.Element]] {
+  private func crossover() -> [[T]] {
     guard let mutationFunc = self.mutationFunction else {
       preconditionFailure("mutation function not defined")
     }
@@ -63,7 +63,7 @@ public class Genetic<T: Genome> where T.Element: Equatable, T.Index == Int {
     let right = batched[1].sorted(by: { $0.rank > $1.rank })
     
     //cross over genomes
-    var crossoverResults: [[T.Element]] = []
+    var crossoverResults: [[T]] = []
     
     for i in 0..<left.count - 1 {
       let leftItem = left[i].genome
@@ -75,7 +75,6 @@ public class Genetic<T: Genome> where T.Element: Equatable, T.Index == Int {
       var mother = rightSplit[0] + leftSplit[1]
       var father = leftSplit[0] + rightSplit[1]
       
-      //TODO: figure out mutate
       let randomMutation = Int.random(in: 0...mutationFactor)
       
       if randomMutation == 1 {
@@ -93,7 +92,7 @@ public class Genetic<T: Genome> where T.Element: Equatable, T.Index == Int {
     return crossoverResults
   }
   
-  private func getRank(value: T) -> Double {
+  private func getRank(value: [T]) -> Double {
     guard let fitnessFunc = self.fitnessFunction else {
       preconditionFailure("fitness function not defined")
     }

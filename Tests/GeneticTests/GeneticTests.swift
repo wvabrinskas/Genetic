@@ -8,15 +8,10 @@ final class GeneticTests: XCTestCase {
   private var completed: Bool = false
 
   private lazy var gene: Genetic = {
-    Genetic<[Int]>(mutationFactor: 20, numberOfChildren: numberOfChildren)
+    Genetic<Int>(mutationFactor: 30, numberOfChildren: numberOfChildren)
   }()
   
   func testExample() {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct
-    // results.
-    // XCTAssertEqual(Genetic().text, "Hello, World!")
-    
     gene.fitnessFunction = { (number: [Int]) -> Double in
       var result: Double = 0
       

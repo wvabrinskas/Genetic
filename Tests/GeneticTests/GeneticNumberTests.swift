@@ -1,7 +1,7 @@
 import XCTest
 @testable import Genetic
 
-final class GeneticTests: XCTestCase {
+final class GeneticNumberTests: XCTestCase {
   let confirm = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   let numberOfChildren = 100
   private let rankingExponent = 2.0
@@ -11,7 +11,7 @@ final class GeneticTests: XCTestCase {
     Genetic<Int>(mutationFactor: 30, numberOfChildren: numberOfChildren)
   }()
   
-  func testExample() {
+  func testGenetic() {
     gene.fitnessFunction = { (number: [Int]) -> Double in
       var result: Double = 0
       
@@ -19,7 +19,6 @@ final class GeneticTests: XCTestCase {
         let num = number[i]
         let correct = self.confirm[i]
         
-        //let diff = abs(num - correct)
         if num == correct {
           result += 1
         }
@@ -54,15 +53,20 @@ final class GeneticTests: XCTestCase {
 
     var newPop = randomPop
     
+    var previousHigh: Double = -1
     while !completed {
       newPop = gene.apply(population: newPop)
-      print("\(Int(pow(gene.highestRanking, (1 / 2.0)) * 100.0))%")
+      
+      if previousHigh != gene.highestRanking {
+        print("member: \(gene.highestRankingMember()) rank: \(Int(pow(gene.highestRanking, (1 / self.rankingExponent)) * 100.0))%")
+        previousHigh = gene.highestRanking
+      }
     }
     
     XCTAssert(newPop.contains(self.confirm), "Could not find match")
   }
   
   static var allTests = [
-    ("testExample", testExample),
+    ("testGenetic", testGenetic),
   ]
 }

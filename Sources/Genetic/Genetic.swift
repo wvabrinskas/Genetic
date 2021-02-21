@@ -11,16 +11,16 @@ public class Genetic<T: Genome> {
   public typealias FitnessFunction = (_ inValue: [T]) -> Double
   public typealias MutationFunction = () -> T
 
+  public var generations = 0
+  public var highestRanking: Double = 0.0
+
+  public var fitnessFunction: FitnessFunction?
+  public var mutationFunction: MutationFunction?
+  
   private var n = 10
   private var mutationFactor: Int = 100
   private var matingPool = [Chromosome<T>]()
   private var rankingPool = [Chromosome<T>]()
-  
-  public var generations = 0
-  public var highestRanking: Double = 0.0
-  public var fitnessFunction: FitnessFunction?
-  public var mutationFunction: MutationFunction?
-  
 
   public init(mutationFactor: Int = 100,
               numberOfChildren: Int = 10) {
@@ -42,6 +42,10 @@ public class Genetic<T: Genome> {
     self.generations = 0
     self.matingPool.removeAll()
     self.rankingPool.removeAll()
+  }
+  
+  public func highestRankingMember() -> [T] {
+    return self.rankingPool.sorted(by: { $0.rank > $1.rank }).first?.genome ?? []
   }
   
   private func crossover() -> [[T]] {

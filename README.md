@@ -7,3 +7,6 @@
 ![](https://img.shields.io/badge/macOS-10.15+-darkcyan?style=flat-square)
 ![](https://img.shields.io/badge/watchOS-6+-darkcyan?style=flat-square)
 ![](https://img.shields.io/badge/tvOS-13+-darkcyan?style=flat-square)
+
+# Introduction
+Genetic is a swift package that makes it incredibly simple to include the Genetic Algorithm within a project. 

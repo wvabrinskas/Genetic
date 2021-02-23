@@ -8,7 +8,7 @@ final class GeneticNumberTests: XCTestCase {
   private var completed: Bool = false
 
   private lazy var gene: Genetic = {
-    Genetic<Int>(mutationFactor: 30, numberOfChildren: numberOfChildren)
+    Genetic<Int>(mutationFactor: 10, numberOfChildren: numberOfChildren)
   }()
   
   func testGenetic() {
@@ -58,7 +58,7 @@ final class GeneticNumberTests: XCTestCase {
       newPop = gene.apply(population: newPop)
       
       if previousHigh != gene.highestRanking {
-        print("member: \(gene.highestRankingMember()) rank: \(Int(pow(gene.highestRanking, (1 / self.rankingExponent)) * 100.0))%")
+        print("member: \(gene.highestRankingMember()) rank: \(Int(pow(gene.highestRanking, (1 / self.rankingExponent)) * 100.0))% generation: \(gene.generations)")
         previousHigh = gene.highestRanking
       }
     }

@@ -8,26 +8,37 @@ private struct Chromosome<T: Genome>: Equatable {
 }
 
 public class Genetic<T: Genome> {
+  
   public typealias FitnessFunction = (_ inValue: [T]) -> Double
   public typealias MutationFunction = () -> T
 
   public var generations = 0
   public var highestRanking: Double = 0.0
 
+  /// A predefined function that is used to determine the rank of a specific offspring
   public var fitnessFunction: FitnessFunction?
+  
+  /// A predefined function that returns a value to be added to the child during a mutation event
   public var mutationFunction: MutationFunction?
   
   private var n = 10
   private var mutationFactor: Int = 100
   private var matingPool = [Chromosome<T>]()
   private var rankingPool = [Chromosome<T>]()
-
+  
+  /// The default initializer for the Genetic class
+  /// - Parameters:
+  ///   - mutationFactor: A number greater than 0 that determines the chances of a single mutation. The probability is 1 / {this_number}
+  ///   - numberOfChildren: Number of children per generation.
   public init(mutationFactor: Int = 100,
               numberOfChildren: Int = 10) {
     self.n = numberOfChildren
     self.mutationFactor = mutationFactor
   }
   
+  /// Applies one generation of the genetic algorithm
+  /// - Parameter population: The population to run through the algorithm
+  /// - Returns: The resulting population that was crossed over and mutated. To be used for next generation.
   public func apply(population: [[T]]) -> [[T]] {
     //get ranks for each member of the population
     self.rankingPool = population.map({ Chromosome(genome: $0,
@@ -38,12 +49,15 @@ public class Genetic<T: Genome> {
     return self.crossover()
   }
   
+  /// Resets the generations and algorithm state
   public func clear() {
     self.generations = 0
     self.matingPool.removeAll()
     self.rankingPool.removeAll()
   }
   
+  /// Returns the current highest ranking offspring of the last generation
+  /// - Returns: The highest ranking offspring
   public func highestRankingMember() -> [T] {
     return self.rankingPool.sorted(by: { $0.rank > $1.rank }).first?.genome ?? []
   }
@@ -116,7 +130,7 @@ public class Genetic<T: Genome> {
   
   private func buildMatingPool() {
     matingPool.removeAll()
-    for _ in 1...n {
+    for _ in 1...(n / 2) {
       if let chrome = self.getRankedElement() {
         matingPool.append(chrome)
       }

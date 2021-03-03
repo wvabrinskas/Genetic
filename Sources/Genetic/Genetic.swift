@@ -14,6 +14,7 @@ public class Genetic<T: Genome> {
 
   public var generations = 0
   public var highestRanking: Double = 0.0
+  public var startingPopulation: [[T]] = []
 
   /// A predefined function that is used to determine the rank of a specific offspring
   public var fitnessFunction: FitnessFunction?
@@ -25,33 +26,41 @@ public class Genetic<T: Genome> {
   private var mutationFactor: Int = 100
   private var matingPool = [Chromosome<T>]()
   private var rankingPool = [Chromosome<T>]()
-  
+  private var population: [[T]] = []
+
   /// The default initializer for the Genetic class
   /// - Parameters:
   ///   - mutationFactor: A number greater than 0 that determines the chances of a single mutation. The probability is 1 / {this_number}
   ///   - numberOfChildren: Number of children per generation.
   public init(mutationFactor: Int = 100,
-              numberOfChildren: Int = 10) {
+              numberOfChildren: Int = 10,
+              startingPopulation: [[T]] = []) {
     self.n = numberOfChildren
     self.mutationFactor = mutationFactor
+    self.startingPopulation = startingPopulation
   }
   
   /// Applies one generation of the genetic algorithm
-  /// - Parameter population: The population to run through the algorithm
   /// - Returns: The resulting population that was crossed over and mutated. To be used for next generation.
-  public func apply(population: [[T]]) -> [[T]] {
+  public func apply() -> [[T]] {
     //get ranks for each member of the population
+    if population.count == 0 {
+      self.population = startingPopulation
+    }
+    
     self.rankingPool = population.map({ Chromosome(genome: $0,
                                                  rank: self.getRank(value: $0)) })
     self.buildMatingPool()
     
     generations += 1
-    return self.crossover()
+    self.population = self.crossover()
+    return self.population
   }
   
   /// Resets the generations and algorithm state
   public func clear() {
     self.generations = 0
+    self.population.removeAll()
     self.matingPool.removeAll()
     self.rankingPool.removeAll()
   }
@@ -96,8 +105,8 @@ public class Genetic<T: Genome> {
       let randomMutation = Int.random(in: 0...mutationFactor)
       
       if randomMutation == 1 {
-        let randomIndexM = Int.random(in: 0..<mother.count - 1)
-        let randomIndexF = Int.random(in: 0..<father.count - 1)
+        let randomIndexM = Int.random(in: 0..<mother.count)
+        let randomIndexF = Int.random(in: 0..<father.count)
 
         mother[randomIndexM] = mutationFunc()
         father[randomIndexF] = mutationFunc()

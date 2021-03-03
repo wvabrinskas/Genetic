@@ -52,10 +52,11 @@ final class GeneticNumberTests: XCTestCase {
     }
 
     var newPop = randomPop
+    gene.startingPopulation = newPop
     
     var previousHigh: Double = -1
     while !completed {
-      newPop = gene.apply(population: newPop)
+      newPop = gene.apply()
       
       if previousHigh != gene.highestRanking {
         print("member: \(gene.highestRankingMember()) rank: \(Int(pow(gene.highestRanking, (1 / self.rankingExponent)) * 100.0))% generation: \(gene.generations)")

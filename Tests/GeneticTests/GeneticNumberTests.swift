@@ -12,7 +12,7 @@ final class GeneticNumberTests: XCTestCase {
   }()
   
   func testGenetic() {
-    gene.fitnessFunction = { (number: [Int]) -> Double in
+    gene.fitnessFunction = { (number: [Int], index: Int) -> Double in
       var result: Double = 0
       
       for i in 0..<number.count {

@@ -9,7 +9,7 @@ private struct Chromosome<T: Genome>: Equatable {
 
 public class Genetic<T: Genome> {
   
-  public typealias FitnessFunction = (_ inValue: [T]) -> Double
+  public typealias FitnessFunction = (_ inValue: [T], _ index: Int) -> Double
   public typealias MutationFunction = () -> T
 
   public var generations = 0
@@ -48,8 +48,16 @@ public class Genetic<T: Genome> {
       self.population = startingPopulation
     }
     
-    self.rankingPool = population.map({ Chromosome(genome: $0,
-                                                 rank: self.getRank(value: $0)) })
+    var ranking: [Chromosome<T>] = []
+    for i in 0..<population.count {
+      let pop = population[i]
+      let rank = self.getRank(value: pop, index: i)
+      let chrome = Chromosome(genome: pop, rank: rank)
+      ranking.append(chrome)
+    }
+
+    self.rankingPool = ranking
+    
     self.buildMatingPool()
     
     generations += 1
@@ -119,11 +127,11 @@ public class Genetic<T: Genome> {
     return crossoverResults
   }
   
-  private func getRank(value: [T]) -> Double {
+  private func getRank(value: [T], index: Int) -> Double {
     guard let fitnessFunc = self.fitnessFunction else {
       preconditionFailure("fitness function not defined")
     }
-    let rank = fitnessFunc(value)
+    let rank = fitnessFunc(value, index)
     highestRanking = max(highestRanking, rank)
     return rank
   }

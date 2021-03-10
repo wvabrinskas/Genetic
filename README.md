@@ -41,8 +41,8 @@ You can set the starting population of the Genetic object.
 Genetic has a property for defining the fitness function of the algorithm. This function should return a `Double` that ranks the child that is passed to this function. 
 
 ```
-  gene.fitnessFunction = { (child: [Int]) -> Double in
-    //return some rank as Double
+  gene.fitnessFunction = { (child: [Int], index: Int) -> Double in
+    //return some rank as Doubleh
   }
 ```
 

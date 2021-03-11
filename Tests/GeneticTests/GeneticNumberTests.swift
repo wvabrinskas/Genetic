@@ -3,7 +3,7 @@ import XCTest
 
 final class GeneticNumberTests: XCTestCase {
   let confirm = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-  let numberOfChildren = 100
+  let numberOfChildren = 10
   private let rankingExponent = 2.0
   private var completed: Bool = false
 

@@ -147,7 +147,7 @@ public class Genetic<T: Genome> {
   
   private func buildMatingPool() {
     matingPool.removeAll()
-    for _ in 1...(n / 2) {
+    for _ in 0...n {
       if let chrome = self.getRankedElement() {
         matingPool.append(chrome)
       }

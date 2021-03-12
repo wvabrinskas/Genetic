@@ -26,7 +26,7 @@ extension StringProtocol {
 public extension Collection where Element: Equatable, Index == Int {
   
   func halve() -> [[Self.Element]] {
-    let half = self.count / 2
+    let half = Int(Double(self.count) / 2)
     let leftHalf = Array(self[0..<half])
     let rightHalf = Array(self[half..<self.count])
     return [leftHalf, rightHalf]

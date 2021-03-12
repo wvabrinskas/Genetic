@@ -87,47 +87,30 @@ public class Genetic<T: Genome> {
     guard matingPool.count > 0 else {
       return []
     }
-    //split mating pool
-    let batched = matingPool.halve()
     
-    guard batched.count >= 2 else {
-      return []
-    }
+    let sortedMatingPool = matingPool.sorted(by: { $0.rank > $1.rank })
     
-    let left = batched[0].sorted(by: { $0.rank > $1.rank })
-    let right = batched[1].sorted(by: { $0.rank > $1.rank })
-    
-    guard left.count > 0 && right.count > 0 else {
-      return []
-    }
-    
-    //cross over genomes
     var crossoverResults: [[T]] = []
-    
-    for i in 0..<left.count - 1 {
-      let leftItem = left[i].genome
-      let rightItem = right[i].genome
-      
-      let leftSplit = leftItem.halve()
-      let rightSplit = rightItem.halve()
-      
-      var mother = rightSplit[0] + leftSplit[1]
-      var father = leftSplit[0] + rightSplit[1]
-      
-      let randomMutation = Int.random(in: 0...mutationFactor)
-      
-      if randomMutation == 1 {
-        let randomIndexM = Int.random(in: 0..<mother.count)
-        let randomIndexF = Int.random(in: 0..<father.count)
+    for i in 0..<sortedMatingPool.count - 1 {
 
-        mother[randomIndexM] = mutationFunc()
-        father[randomIndexF] = mutationFunc()
+      let mom = sortedMatingPool[i].genome
+      let dad = sortedMatingPool[i + 1].genome
+      
+      var child: [T] = []
+      for i in 0..<mom.count {
+        let random = Int.random(in: 0...1)
+        
+        let randomMutation = Int.random(in: 0...mutationFactor)
+        if randomMutation == 1 {
+          child.append(mutationFunc())
+        } else {
+          child.append(random == 1 ? mom[i] : dad[i])
+        }
       }
       
-      crossoverResults.append(mother)
-      crossoverResults.append(father)
+      crossoverResults.append(child)
     }
-        
+
     return crossoverResults
   }
   
@@ -144,8 +127,8 @@ public class Genetic<T: Genome> {
     let randomizedPool = rankingPool.randomize()
   
     let randomHighFitness: Double = Double.random(in: 0...highestRanking)
-    let rankable = randomizedPool.first(where: { randomHighFitness <= $0.rank })
-    
+    let rankable = randomizedPool.first(where: { randomHighFitness <= $0.rank && !matingPool.contains($0) })
+
     return rankable
   }
   

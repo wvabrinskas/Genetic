@@ -97,6 +97,10 @@ public class Genetic<T: Genome> {
     let left = batched[0].sorted(by: { $0.rank > $1.rank })
     let right = batched[1].sorted(by: { $0.rank > $1.rank })
     
+    guard left.count > 0 && right.count > 0 else {
+      return []
+    }
+    
     //cross over genomes
     var crossoverResults: [[T]] = []
     

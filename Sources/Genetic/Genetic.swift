@@ -84,16 +84,17 @@ public class Genetic<T: Genome> {
       preconditionFailure("mutation function not defined")
     }
     
-    guard matingPool.count > 0 else {
+    guard matingPool.count > 1 else {
       return []
     }
         
     var crossoverResults: [[T]] = []
     
-    for i in stride(from: 0, to: matingPool.count - 1, by: 2) {
-      let mom = matingPool[i].genome
-      let dad = matingPool[i + 1].genome
+    for _ in 0..<n {
+      let mom = matingPool[0].genome //first highest
+      let dad = matingPool[1].genome //second highest
       
+      //mate randomly
       var child: [T] = []
       for i in 0..<mom.count {
         let random = Int.random(in: 0...1)
@@ -105,9 +106,9 @@ public class Genetic<T: Genome> {
           child.append(random == 1 ? mom[i] : dad[i])
         }
       }
-      
       crossoverResults.append(child)
     }
+    
     return crossoverResults
   }
   

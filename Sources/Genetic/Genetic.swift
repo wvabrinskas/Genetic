@@ -26,6 +26,7 @@ public class Genetic<T: Genome> {
   private var mutationFactor: Int = 100
   private var matingPool = [Chromosome<T>]()
   private var rankingPool = [Chromosome<T>]()
+  private var previousRankingPool = [Chromosome<T>]()
   private var population: [[T]] = []
 
   /// The default initializer for the Genetic class
@@ -52,11 +53,17 @@ public class Genetic<T: Genome> {
     for i in 0..<population.count {
       let pop = population[i]
       let rank = self.getRank(value: pop, index: i)
-      let chrome = Chromosome(genome: pop, rank: rank)
+      var chrome = Chromosome(genome: pop, rank: rank)
+      
+      if i < self.previousRankingPool.count {
+        let old = self.previousRankingPool[i]
+        chrome = old.rank < chrome.rank ? chrome : old
+      }
       ranking.append(chrome)
     }
 
     self.rankingPool = ranking
+    self.previousRankingPool = ranking
     
     self.buildMatingPool()
     

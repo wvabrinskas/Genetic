@@ -87,14 +87,12 @@ public class Genetic<T: Genome> {
     guard matingPool.count > 0 else {
       return []
     }
-    
-    let sortedMatingPool = matingPool.sorted(by: { $0.rank > $1.rank })
-    
+        
     var crossoverResults: [[T]] = []
-    for i in 0..<sortedMatingPool.count - 1 {
-
-      let mom = sortedMatingPool[i].genome
-      let dad = sortedMatingPool[i + 1].genome
+    
+    for i in stride(from: 0, to: matingPool.count - 1, by: 2) {
+      let mom = matingPool[i].genome
+      let dad = matingPool[i + 1].genome
       
       var child: [T] = []
       for i in 0..<mom.count {
@@ -110,7 +108,6 @@ public class Genetic<T: Genome> {
       
       crossoverResults.append(child)
     }
-
     return crossoverResults
   }
   
@@ -123,22 +120,8 @@ public class Genetic<T: Genome> {
     return rank
   }
   
-  private func getRankedElement() -> Chromosome<T>? {
-    let randomizedPool = rankingPool.randomize()
-  
-    let randomHighFitness: Double = Double.random(in: 0...highestRanking)
-    let rankable = randomizedPool.first(where: { randomHighFitness <= $0.rank && !matingPool.contains($0) })
-
-    return rankable
-  }
-  
   private func buildMatingPool() {
-    matingPool.removeAll()
-    for _ in 0...n {
-      if let chrome = self.getRankedElement() {
-        matingPool.append(chrome)
-      }
-    }
+    matingPool = rankingPool.sorted(by: { $0.rank > $1.rank })
   }
 
 }

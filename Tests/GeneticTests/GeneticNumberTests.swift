@@ -3,12 +3,12 @@ import XCTest
 
 final class GeneticNumberTests: XCTestCase {
   let confirm = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-  let numberOfChildren = 100
+  let numberOfChildren = 300
   private let rankingExponent = 2.0
   private var completed: Bool = false
 
   private lazy var gene: Genetic = {
-    Genetic<Int>(mutationFactor: 30, numberOfChildren: numberOfChildren)
+    Genetic<Int>(mutationFactor: 100, numberOfChildren: numberOfChildren)
   }()
   
   func testGenetic() {
@@ -34,6 +34,7 @@ final class GeneticNumberTests: XCTestCase {
       if number == self.confirm {
         self.completed = true
       }
+      
       return result
     }
     
@@ -64,7 +65,7 @@ final class GeneticNumberTests: XCTestCase {
       }
     }
     
-    XCTAssert(newPop.contains(self.confirm), "Could not find match")
+    XCTAssert(gene.highestRankingMember() == self.confirm, "Could not find match")
   }
   
   static var allTests = [

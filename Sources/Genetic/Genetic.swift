@@ -58,17 +58,16 @@ public class Genetic<T: Genome> {
     }
 
     if self.previousRankingPool.count == ranking.count {
-      let sorted = ranking.sorted(by: { $0.rank > $1.rank })
-      let sortedPrevious = previousRankingPool.sorted(by: { $0.rank > $1.rank })
-      var sortedCopy = sorted
+      let sorted = ranking.sorted(by: { $0.rank > $1.rank }) //sort new population
       
-      for i in 0..<sorted.count {
-        let new = sorted[i]
-        let old = sortedPrevious[i]
-        sortedCopy[i] = old.rank <= new.rank ? new : old
-      }
+      var sortedCopy = previousRankingPool //create copy of previous rankings
+      sortedCopy.append(contentsOf: sorted) //append contents of newly sorted population
+      
+      sortedCopy = sortedCopy.sorted(by: { $0.rank > $1.rank }) //sort merged
+      sortedCopy = Array(sortedCopy[0..<(sorted.count - 1)]) //remove the lowest ranking
+
       self.rankingPool = sortedCopy
-      
+    
     } else {
       self.rankingPool = ranking
     }

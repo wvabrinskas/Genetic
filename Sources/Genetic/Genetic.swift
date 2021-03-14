@@ -59,12 +59,12 @@ public class Genetic<T: Genome> {
 
     if self.previousRankingPool.count == ranking.count {
       let sorted = ranking.sorted(by: { $0.rank > $1.rank })
-      
+      let sortedPrevious = previousRankingPool.sorted(by: { $0.rank > $1.rank })
       var sortedCopy = sorted
       
       for i in 0..<sorted.count {
         let new = sorted[i]
-        let old = self.previousRankingPool[i]
+        let old = sortedPrevious[i]
         sortedCopy[i] = old.rank <= new.rank ? new : old
       }
       self.rankingPool = sortedCopy

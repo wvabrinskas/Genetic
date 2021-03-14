@@ -53,17 +53,27 @@ public class Genetic<T: Genome> {
     for i in 0..<population.count {
       let pop = population[i]
       let rank = self.getRank(value: pop, index: i)
-      var chrome = Chromosome(genome: pop, rank: rank)
-      
-      if i < self.previousRankingPool.count {
-        let old = self.previousRankingPool[i]
-        chrome = old.rank < chrome.rank ? chrome : old
-      }
+      let chrome = Chromosome(genome: pop, rank: rank)
       ranking.append(chrome)
     }
 
-    self.rankingPool = ranking
-    self.previousRankingPool = ranking
+    if self.previousRankingPool.count == ranking.count {
+      let sorted = ranking.sorted(by: { $0.rank > $1.rank })
+      
+      var sortedCopy = sorted
+      
+      for i in 0..<sorted.count {
+        let new = sorted[i]
+        let old = self.previousRankingPool[i]
+        sortedCopy[i] = old.rank < new.rank ? new : old
+      }
+      self.rankingPool = sortedCopy
+      
+    } else {
+      self.rankingPool = ranking
+    }
+
+    self.previousRankingPool = self.rankingPool
     
     self.buildMatingPool()
     
